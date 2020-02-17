@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+    <head>
+        <title>How to Display existing files on Server in Dropzone - PHP</title>
+
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <script src='jquery-3.3.1.min.js'></script>
+        <link href="dropzone.min.css" rel="stylesheet" type="text/css">
+        <script src="dropzone.min.js" type="text/javascript"></script>
+    </head>
+    <body >
+        <div class="container" >
+            <div class='content'>
+            <form action="upload.php" class="dropzone" > 
+            </form>  
+            </div> 
+        </div>
+
+        <!-- Script -->
+        <script type='text/javascript'>
+
+        Dropzone.autoDiscover = false;
+        $(".dropzone").dropzone({
+            init: function() {   
+                myDropzone = this;
+                $.ajax({
+                    url: 'upload.php',
+                    type: 'post',
+                    data: {request: 2},
+                    dataType: 'json',
+                    success: function(response){
+                        
+                        $.each(response, function(key,value) {
+                            var mockFile = { name: value.name, size: value.size };
+
+                            myDropzone.emit("addedfile", mockFile);
+                            myDropzone.emit("thumbnail", mockFile, value.path);
+                            myDropzone.emit("complete", mockFile);
+
+                        });
+
+                    }
+                });
+            }
+        });
+        
+        </script>
+    </body>
+</html>
